@@ -44,7 +44,7 @@ class Generator(object):
             net = tf.nn.relu(net)
             
             net = input_stage + net
-            net = tc.layers.conv2d(net,256,[3,3],[1,1],padding = 'SAME',
+            net = tc.layers.conv2d(net,256,3,1,padding = 'SAME',
                                    weights_initializer=tf.contrib.layers.xavier_initializer(),
                                    activation_fn=None
                                    )
@@ -52,7 +52,7 @@ class Generator(object):
             net = tc.layers.batch_norm(net,is_training = train)
             net = tf.nn.relu(net)
             
-            net = tc.layers.conv2d(net,256,[3,3],[1,1],padding = 'SAME',
+            net = tc.layers.conv2d(net,256,3,1,padding = 'SAME',
                                    weights_initializer=tf.contrib.layers.xavier_initializer(),
                                    activation_fn=None
                                    )
@@ -60,7 +60,7 @@ class Generator(object):
             net = tc.layers.batch_norm(net,is_training = train)
             net = tf.nn.relu(net)
             
-            net = tc.layers.conv2d(net,256,[3,3],[1,1],padding = 'SAME',
+            net = tc.layers.conv2d(net,256,3,1,padding = 'SAME',
                                    weights_initializer=tf.contrib.layers.xavier_initializer(),
                                    activation_fn=None
                                    )

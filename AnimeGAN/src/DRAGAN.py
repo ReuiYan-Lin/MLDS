@@ -34,12 +34,13 @@ class DRAGAN(object):
         self.data = data
         self.img_row = self.data.img_feat.shape[1]
         self.img_col = self.data.img_feat.shape[2]
-        self.alpha = 10.
+        #self.alpha = 10.
         self.d_epoch = 1
         self.gen_path()
         self.batch_size = batch_size
         self.lr = lr
-        self.la = 5
+        self.lambd = 0.5
+        self.la = 34
         self.iter = epoch
         self.z_dim = noise_dim
         self.hidden = hidden
@@ -85,18 +86,25 @@ class DRAGAN(object):
         pred_real, pred_real_tag = self.d_net(self.seq, self.img, reuse=False) 
         loss_d_real_label = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=pred_real, labels=tf.ones_like(pred_real)))
         loss_d_real_tag = tf.reduce_mean(tf.reduce_sum(tf.nn.sigmoid_cross_entropy_with_logits(logits=pred_real_tag, labels=self.seq),axis=1))
-        #loss_d_real = self.la * loss_d_real_label + loss_d_real_tag
-        loss_d_real = loss_d_real_label
+        loss_d_real = self.la * loss_d_real_label + loss_d_real_tag
+        
         #train with fake
         d_f_tag = self.w_seq
         fake = self.g_net(d_f_tag, self.z)
         pred_fake, pred_fake_tag = self.d_net(d_f_tag, fake)
         loss_d_fake_label = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=pred_fake, labels=tf.zeros_like(pred_fake)))
-        #loss_d_fake_tag = tf.reduce_mean(tf.reduce_sum ( tf.nn.sigmoid_cross_entropy_with_logits(logits=pred_fake_tag, labels=d_f_tag), axis=1))
-        #loss_d_fake = self.la * loss_d_fake_label
-        loss_d_fake = loss_d_fake_label
+        loss_d_fake_tag = tf.reduce_mean(tf.reduce_sum ( tf.nn.sigmoid_cross_entropy_with_logits(logits=pred_fake_tag, labels=d_f_tag), axis=1))
+        loss_d_fake = self.la * loss_d_fake_label + loss_d_fake_tag
         
-        self.d_loss = loss_d_real + loss_d_fake
+        alpha = tf.random_uniform([], minval=0.,maxval=1.)
+        differences = self.img_p - self.img
+        interpolates = self.img + (alpha * differences)
+        _,D_inter=self.d_net(self.seq,interpolates)
+        gradients = tf.gradients(D_inter, [interpolates])[0]
+        slopes = tf.sqrt(tf.reduce_sum(tf.square(gradients), reduction_indices=[1]))
+        gradient_penalty = tf.reduce_mean((slopes - 1.) ** 2)
+        
+        self.d_loss = loss_d_real + loss_d_fake + self.lambd * gradient_penalty
         
         
         #update generator
@@ -107,17 +115,8 @@ class DRAGAN(object):
         loss_g_label = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=d_g, labels=tf.ones_like(d_g)))
         loss_g_tag = tf.reduce_mean(tf.reduce_sum(tf.nn.sigmoid_cross_entropy_with_logits(logits=d_gc, labels=tags), axis=1))
         
-        #self.g_loss = self.la * loss_g_label + loss_g_tag
-        self.g_loss = loss_g_label
+        self.g_loss = self.la * loss_g_label + loss_g_tag
         
-        alpha = tf.random_uniform([], minval=0.,maxval=1.)
-        differences = self.img_p - self.img
-        interpolates = self.img + (alpha * differences)
-        _,D_inter=self.d_net(self.seq,interpolates)
-        gradients = tf.gradients(D_inter, [interpolates])[0]
-        slopes = tf.sqrt(tf.reduce_sum(tf.square(gradients), reduction_indices=[1]))
-        gradient_penalty = tf.reduce_mean((slopes - 1.) ** 2)
-        self.d_loss += 0.25 * gradient_penalty
         
         
         self.loss_cls_d = loss_d_real_tag

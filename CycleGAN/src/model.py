@@ -43,9 +43,9 @@ class cycleGAN(object):
     
     def build_model(self):
         self.real_data = tf.placeholder(tf.float32,[None,self.image_size,self.image_size,self.input_c_dim+self.output_c_dim],
-                                        name = 'real_A_and_B_images')
-        self.real_A = self.real_data[:,:,:,:self.input_c_dim]
-        self.real_B = self.real_data[:,:,:,self.input_c_dim:self.input_c_dim+self.output_c_dim]
+                                        name = 'real_A_and_B_images') # [batch,width,height,3+3 (channel)]
+        self.real_A = self.real_data[:,:,:,:self.input_c_dim] # real image A (0~3)
+        self.real_B = self.real_data[:,:,:,self.input_c_dim:self.input_c_dim+self.output_c_dim] # real image B (4~6)
         
         self.fake_B = self.generator(self.real_A,False,name='generatorA2B')
         self.fake_A_ = self.generator(self.real_B,False,name='generatorB2A')

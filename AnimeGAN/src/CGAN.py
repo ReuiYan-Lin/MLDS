@@ -6,7 +6,7 @@ import scipy.misc as misc
 import pickle
 from utils import *
 #from DRAGAN import *
-from Improved_WGAN import *
+from ACGAN import *
 #from WGAN_GP import *
 
 def main():
@@ -23,8 +23,9 @@ def main():
     data = Data(img_feat, tags_idx, noise_dim)
     data.load_eval(test_path)
     print("Building Network...")
-    model = Improved_WGAN(data)
-    #model = WGAN_GP(data, vocab_processor)
+    model = ACGAN(data)
+    #model = DRAGAN(data)
+	#model = WGAN_GP(data, vocab_processor)
     model.build_model()
     print("Training...")
     model.train()

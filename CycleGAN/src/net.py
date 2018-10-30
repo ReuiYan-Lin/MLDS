@@ -29,19 +29,23 @@ def discriminator(image,reuse=False,name="discriminator"):
             tf.get_variable_scope().reuse_variables()
         else:
             assert tf.get_variable_scope().reuse is False
-        
+        # [batch,128,128,64]
         net = leaky_relu(tc.layers.conv2d(image,64,4,2,padding='SAME', activation_fn=None,
                                           weights_initializer=tf.truncated_normal_initializer(stddev=0.02),
                                           biases_initializer=None))
+        # [batch,64,64,128]
         net = leaky_relu(tc.layers.batch_norm(tc.layers.conv2d(net,128,4,2,padding='SAME', activation_fn=None,
                                                                weights_initializer=tf.truncated_normal_initializer(stddev=0.02),
                                                                biases_initializer=None)))
+        # [batch,32,32,256]
         net = leaky_relu(tc.layers.batch_norm(tc.layers.conv2d(net,256,4,2,padding='SAME', activation_fn=None,
                                                                weights_initializer=tf.truncated_normal_initializer(stddev=0.02),
                                                                biases_initializer=None)))
+        # [batch,32,32,512]
         net = leaky_relu(tc.layers.batch_norm(tc.layers.conv2d(net,512,4,1,padding='SAME', activation_fn=None,
                                                                weights_initializer=tf.truncated_normal_initializer(stddev=0.02),
                                                                biases_initializer=None)))
+        # [batch,32,32,1]
         net = tc.layers.conv2d(net,1,4,1,padding='SAME',activation_fn = None,
                                weights_initializer=tf.truncated_normal_initializer(stddev=0.02),
                                biases_initializer=None)

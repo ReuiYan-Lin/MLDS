@@ -48,7 +48,7 @@ class cycleGAN(object):
         self.real_B = self.real_data[:,:,:,self.input_c_dim:self.input_c_dim+self.output_c_dim] # real image B (4~6)
         
         self.fake_B = self.generator(self.real_A,False,name='generatorA2B')
-        self.fake_A_ = self.generator(self.real_B,False,name='generatorB2A')
+        self.fake_A_ = self.generator(self.fake_B,False,name='generatorB2A')
         self.fake_A = self.generator(self.real_B,True, name='generatorB2A')
         self.fake_B_ = self.generator(self.fake_A,True, name='generatorA2B')
         

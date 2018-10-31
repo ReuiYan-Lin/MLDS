@@ -20,3 +20,5 @@ Compare WGAN、WGAN-GP、DRAGAN (in this part﹐we use a min-size network to sav
 
 ## min-size network
 <img width="520" height="380" src="https://github.com/ReuiYan-Lin/MLDS/blob/master/AnimeGAN/img/min_size_network.png"/>
+## Download Training Data
+[https://drive.google.com/drive/folders/1bXXeEzARYWsvUwbW3SA0meulCR3nIhDb](https://drive.google.com/drive/folders/1bXXeEzARYWsvUwbW3SA0meulCR3nIhDb)

@@ -3,7 +3,7 @@ Implement the method by [Yanghua Jin](https://arxiv.org/abs/1708.05509) in [Towa
 with Generative Adversarial Networks](https://arxiv.org/pdf/1708.05509.pdf)
 
 ## Result
-![](https://github.com/ReuiYan-Lin/MLDS/blob/master/AnimeGAN/img/generator_img.png =250x)
+<img width="150" height="150" src="https://github.com/ReuiYan-Lin/MLDS/blob/master/AnimeGAN/img/generator_img.png"/>
 
 ## Network Architecture
 ![alt text](https://github.com/ReuiYan-Lin/MLDS/blob/master/AnimeGAN/img/generator.png)
